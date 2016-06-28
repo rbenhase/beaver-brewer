@@ -169,11 +169,12 @@ class Beaver_Brewer {
 	 */
 	private function updater_init() {
 
-		$MyUpdateChecker = PucFactory::buildUpdateChecker(
-      'http://beaverbrewer.com/plugin-latest/?action=get_metadata&slug=beaver-brewer', //Metadata URL.
-      PLUGIN_MAIN,
-      $this->plugin_name //Plugin slug. Usually it's the same as the name of the directory.
-    );
+		$className = PucFactory::getLatestClassVersion( 'PucGitHubChecker' );
+		$myUpdateChecker = new $className(
+			'https://github.com/rbenhase/beaver-brewer/',
+			PLUGIN_MAIN,
+			'master'
+		);
 
 	}
 
