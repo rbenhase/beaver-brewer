@@ -7,7 +7,7 @@ Tested up to: 4.5
 ***
 
 ## Homebrew for Beaver Builder ##
-Beaver Brewer extends the Beaver Builder plugin by giving admins the ability to easily install "homebrew" modules. It also enables developers to release their modules in an a la carte fashion (no plugin wrapper needed) and even offer automatic updates to their modules through the Wordpress dashboard. You can [download the plugin](http://beaverbrewer.com/downloads) and [download an example module](https://bitbucket.org/rbenhase1/example-bb-module-two-column-text-editor/get/master.zip) right away to get started. 
+Beaver Brewer extends the Beaver Builder plugin by giving admins the ability to easily install "homebrew" modules. It also enables developers to release their modules in an a la carte fashion (no plugin wrapper needed) and even offer automatic updates to their modules through the Wordpress dashboard. You can [download the plugin](http://beaverbrewer.com/downloads) and [download some modules](http://beaverbrewer.com/modules) right away to get started. 
 
 Beaver Brewer is in active development and should be considered an alpha at this stage. For this reason, it is not yet recommended that you install it on a Production site. When more features are added to the plugin, an automatic update will appear in your Wordpress plugin admin page. 
 
@@ -85,13 +85,11 @@ This is when you try to activate two modules that contain identical class names 
 ***
 
 ## Compatibility Requirements ##
-I plan on releasing complete online documentation for this plugin before it's released into the wild, but the general rule for making your module compatible with Beaver Brewer is that you should avoid making it dependent on a parent plugin. If you follow the Beaver Builder custom module documentation (see [this page](https://www.wpbeaverbuilder.com/custom-module-documentation/)), only skipping the very first part (about creating a plugin wrapper), you should be fine. The MY_MODULES_DIR and MY_MODULES_URL constants are defined by Beaver Brewer, and the init hook to load your module is already taken care of. You can see and download [my example module](https://bitbucket.org/rbenhase1/example-bb-module-two-column-text-editor/) if you're having trouble getting started. 
+I plan on releasing complete online documentation for this plugin before it's released into the wild, but the general rule for making your module compatible with Beaver Brewer is that you should avoid making it dependent on a parent plugin. If you follow the Beaver Builder custom module documentation (see [this page](https://www.wpbeaverbuilder.com/custom-module-documentation/)), only skipping the very first part (about creating a plugin wrapper), you should be fine. The MY_MODULES_DIR and MY_MODULES_URL constants are defined by Beaver Brewer, and the init hook to load your module is already taken care of. You can see and download [my plugin boilerplate](http://beaverbrewer.com/downloads) if you're having trouble getting started. 
 
-To enable automatic updates for your module, you can utilize the module.config file. For this, it's best that you look at or [download the example module](https://bitbucket.org/rbenhase1/example-bb-module-two-column-text-editor/) to begin with and adjust your settings as needed. 
+To enable automatic updates for your module, you can utilize the module.config file. See [http://beaverbrewer.com/module-config/](http://beaverbrewer.com/module-config/) for more info.
 
-***
-
-### To Do ###
+## To Do ##
 There's a lot more I'd like to do with this module in future versions. Here's a few things:
 
 - Add a search / filter modules function on the Beaver Brewer admin page.

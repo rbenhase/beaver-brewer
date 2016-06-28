@@ -61,9 +61,9 @@ See your error log for more information.
 This is when you try to activate two modules that contain identical class names (or a two copies of the same module). You must remove one of the modules, or else rename one of the classes causing the issue.
 
 == Compatibility Requirements ==
-I plan on releasing complete online documentation for this plugin before it's released into the wild, but the general rule for making your module compatible with Beaver Brewer is that you should avoid making it dependent on a parent plugin. If you follow the Beaver Builder custom module documentation (see https://www.wpbeaverbuilder.com/custom-module-documentation/), only skipping the very first part (about creating a plugin wrapper), you should be fine. The MY_MODULES_DIR and MY_MODULES_URL constants are defined by Beaver Brewer, and the init hook to load your module is already taken care of. You can see and download my example module at https://bitbucket.org/rbenhase1/example-bb-module-two-column-text-editor/ if you're having trouble getting started. 
+I plan on releasing complete online documentation for this plugin before it's released into the wild, but the general rule for making your module compatible with Beaver Brewer is that you should avoid making it dependent on a parent plugin. If you follow the Beaver Builder custom module documentation (see https://www.wpbeaverbuilder.com/custom-module-documentation/), only skipping the very first part (about creating a plugin wrapper), you should be fine. The MY_MODULES_DIR and MY_MODULES_URL constants are defined by Beaver Brewer, and the init hook to load your module is already taken care of. You can see and download my plugin boilerplate at http://beaverbrewer.com/downloads if you're having trouble getting started. 
 
-To enable automatic updates for your module, you can utilize the module.config file. For this, it's best that you look at or download the example module (https://bitbucket.org/rbenhase1/example-bb-module-two-column-text-editor/) to begin with and adjust your settings as needed. 
+To enable automatic updates for your module, you can utilize the module.config file. See http://beaverbrewer.com/module-config/ for more info.
 
 == To Do ==
 There's a lot more I'd like to do with this module in future versions. Here's a few things:
