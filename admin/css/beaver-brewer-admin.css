@@ -1,0 +1,120 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+ 
+#installed-modules {
+  background-color:#ffffff;
+  padding:2em;
+  border:1px solid #ddd;
+}
+
+.drag-drop .drag-drop-inside {
+  width:100%;
+  text-align:left;
+  margin:20px 0 0;
+}
+
+.drag-drop .drag-drop-inside p {
+  text-align:left;
+}
+
+#installed-modules.drag-over {
+  background:#00a0d2;
+  border-color: #008EC2; 
+}
+
+#installed-modules.drag-over h2 {
+  color:#ffffff;
+}
+
+#installed-modules.drag-over #module-install-button {
+  display:none;
+}
+
+#installed-modules.drag-over #module-list {
+  opacity:0;
+}
+
+#module-list .single-module {
+  margin:1em 5px 1em 0;
+  padding: 1em 1em 2em;
+  background:#f4f4f4;
+  max-width:680px;
+  border:1px solid #eee;
+  border-left:4px solid #ccc;
+}
+
+#module-list .single-module.module-active {
+  background-color:#f7fcfe;
+  border-left: 4px solid #00a0d2;
+}
+
+#module-list .single-module.module-failed {
+  background-color:#fff2f5;
+  border-left: 4px solid #bb0000;
+}
+ 
+#module-list .single-module.update-available {
+  background-color:#fef7f1;
+  border-left: 4px solid #d54e21;
+}
+ 
+#module-list .single-module .module-name {
+  font-weight:700;
+}
+
+#module-list .single-module .module-version {
+  font-style:italic;
+  color:#555;
+}
+
+#module-list .single-module .module-actions {
+  margin:.5em 0;
+}
+
+#module-list .single-module .module-url {
+  margin: 0 0 1em 0;
+}
+
+#module-list .single-module .module-url a {
+  text-decoration:none;
+}
+
+#module-list .single-module .module-url a:hover {
+  text-decoration:underline;
+}
+
+#module-list .single-module .module-updates {
+  padding:1em;
+  background:rgba(255,255,255,.7);
+  border:1px solid rgba(50,50,50,.3);
+  margin:1em 0;
+}
+
+#module-list .single-module .module-messages {
+  margin:1.5em 0 0;
+  padding:.25em .5em;
+  display:none;
+}
+
+#module-list .single-module .module-messages.success:before {
+  color: #00bb00;
+  font-family:dashicons;
+  font-size:1.5em;
+  margin-right:5px;
+  line-height:1em;
+  vertical-align:middle;
+  content: "\f147";
+}
+
+#module-list .single-module .module-messages.failure:before {
+  color: #bb0000;
+  font-family:dashicons;
+  font-size:1.5em;
+  margin-right:5px;
+  line-height:1em;
+  vertical-align:middle;
+  content: "\f158";
+}
+
