@@ -9,7 +9,7 @@ Tested up to: 4.5
 ## Homebrew for Beaver Builder ##
 Beaver Brewer extends the Beaver Builder plugin by giving admins the ability to easily install "homebrew" modules. It also enables developers to release their modules in an a la carte fashion (no plugin wrapper needed) and even offer automatic updates to their modules through the Wordpress dashboard. You can [download the plugin](http://beaverbrewer.com/downloads) and [download some modules](http://beaverbrewer.com/modules) right away to get started. 
 
-Beaver Brewer is in active development and should be considered an alpha at this stage. For this reason, it is not yet recommended that you install it on a Production site. When more features are added to the plugin, an automatic update will appear in your Wordpress plugin admin page. 
+Beaver Brewer is in active development and should be considered a Beta at this stage. For this reason, you should be cautious about using it on a Production site. When more features are added to the plugin, an automatic update will appear in your Wordpress plugin admin page. 
 
 ***
 
@@ -31,7 +31,7 @@ Whether you're a developer who needs to crank out a module post haste, or just s
 ***
 
 ## Downloads ##
-You can [download the latest version of Beaver Brewer here](http://beaverbrewer.com/downloads). Keep in mind that Beaver Brewer is still considered to be in ALPHA; it is not yet recommended that you use it on a Production site.
+You can [download the latest version of Beaver Brewer here](http://beaverbrewer.com/downloads). Keep in mind that Beaver Brewer is still considered to be in the Beta stage; be careful about using it on a production site (and keep regular backups just in case).
 
 ## Installation ##
 1. Upload the beaver-brewer folder to the /wp-content/plugins/ directory.
