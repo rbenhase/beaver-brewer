@@ -2,8 +2,15 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
  
-#installed-modules {
+#installed-modules,
+#find-more-modules {
   background-color:#ffffff;
   padding:2em;
   border:1px solid #ddd;
@@ -118,3 +125,50 @@
   content: "\f158";
 }
 
+#find-more-modules a {
+  text-decoration:none;
+}
+
+#find-more-modules .module-directory-toolbar a {
+  margin: 0 0 15px 0;
+  display:inline-block;
+}
+
+#find-more-modules .module-directory-toolbar form {
+  display:inline-block;
+  margin: 0 0 15px 15px;
+}
+
+#module-results .single-module {
+  padding:1em;
+  background-color:#eee;
+  border:1px solid #ccc;
+  margin:0 1em 1em 0;
+  float:left;
+  max-width:300px;
+}
+
+#module-results .pagination {
+  clear:both;
+  padding:15px 0 0;
+  color:#777;
+}
+
+#module-results .pagination .pagination-links {
+  margin:15px 0;
+}
+
+#module-results .pagination .pagination-links li {
+  display:inline-block;
+  margin: 5px 2px;
+}
+
+#module-results .pagination .pagination-links li a {
+  padding:4px 8px;
+  border:1px solid #ccc;
+  text-decoration:none;
+}
+
+#module-results .pagination .pagination-links li a:hover {
+  
+}

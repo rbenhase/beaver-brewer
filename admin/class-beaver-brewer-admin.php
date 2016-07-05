@@ -116,10 +116,169 @@ class Beaver_Brewer_Admin {
     // If updates are available, update the cached value
     if ( $update_count > 0 ) 
       set_transient( "beaver-brewer-updates", $update_count, 12 * HOUR_IN_SECONDS );
-
 	}
+
 	
-	
+	/**
+	 * Render the admin page tab navigation.
+	 *
+	 * @since    0.3.0
+	 * @return   Int  $current  The current active tab
+	 */
+  public function get_admin_page_tabs() {
+    $tabs = array(
+      __( "My Modules", $this->plugin_name ),
+      __( "Find More Modules", $this->plugin_name )
+    );
+    
+    $current = ( isset( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 0 );
+      
+    echo '<h2 class="nav-tab-wrapper">';
+    foreach( $tabs as $tab => $name ){
+        $class = ( $tab == $current ) ? ' nav-tab-active' : '';
+        echo "<a class='nav-tab$class' href='?page=beaver-brewer&tab=$tab'>$name</a>";
+    }
+    echo '</h2>';
+    return $current;
+  }		
+  
+  
+	/**
+	 * Render the module results on the "Find Modules" page.
+	 *
+	 * @since    0.3.0
+	 */
+  public function prepare_module_results() {
+    
+    $result_page = ( isset( $_REQUEST['result_page'] ) ? $_REQUEST['result_page'] : 1 );
+    
+    echo '<h3>';
+    if ( isset( $_REQUEST['search'] ) ) {
+      $response = wp_remote_get( 'http://beaverbrewer.com/wp-json/brewer/v2/modules-search/' . urlencode( $_REQUEST['search'] ) . '/' . $result_page );    
+      _e( "Search Results: ", $this->plugin_name );
+      echo $_REQUEST['search']; 
+    } else if ( isset( $_REQUEST['orderby'] ) && $_REQUEST['orderby'] == 'name' ) {
+      $response = wp_remote_get( 'http://beaverbrewer.com/wp-json/brewer/v2/modules-alphabetical/' . $result_page ); 
+      _e( "Modules - Alphabetical", $this->plugin_name );
+    } else {
+      $response = wp_remote_get( 'http://beaverbrewer.com/wp-json/brewer/v2/modules-latest/' . $result_page );
+      _e( "Recently Added Modules", $this->plugin_name );
+    }
+    echo '</h3>';
+    
+    $this->render_module_results( $response ); 
+      
+  }
+  
+	/**
+	 * Render the module results on the "Find Modules" page.
+	 *
+	 * @since   0.3.0
+	 * @param   Object  $response  The response from the BB Module API.
+	 */
+  public function render_module_results( $response ) {
+  ?>
+    <div id="module-results">
+      <ul class="clearfix">
+        
+      <?php $result = json_decode( $response['body'] ); ?>
+      
+      <?php $modules = $result->posts; ?>
+      <?php $found = $result->found; ?>
+      <?php $offset = $result->offset; ?>
+      <?php $count_modules = count( $modules ); ?>
+      <?php $result_page = ( isset( $_REQUEST['result_page'] ) ? $_REQUEST['result_page'] : 1 ); ?>
+      <?php if ( !empty( $modules ) && is_object( $modules ) ): ?>
+        <li><?_e( "An error occurred while connecting to the directory.", $this->plugin_name ); ?></li>
+      <?php elseif ( !empty( $modules ) && isset( $modules[0]->ID ) ): ?>
+        <?php foreach ( $modules as $module ): ?>
+          
+          <li class="single-module">
+            <h3 class="module-title"><?php echo $module->post_title; ?></h3>
+            <?php if ( !empty(  $module->meta->{"module-description"}[0] ) ): ?>
+              <p><?php echo ( strlen( $module->meta->{"module-description"}[0] )> 140  ? mb_substr( $module->meta->{"module-description"}[0], 0, 140 ) . '...' : $module->meta->{"module-description"}[0] ); ?></p>
+            <?php endif; ?>
+            <ul class="module-details">
+
+              <?php if ( !empty( $module->meta->{"module-version"}[0] ) ): ?>
+    					  <li><strong>Version:</strong> <?php echo $module->meta->{"module-version"}[0]; ?></li>
+    					<?php endif; ?>
+    					
+    					<?php if ( !empty(  $module->meta->{"module-author"}[0] ) ): ?>
+    					  <li><strong>Author:</strong> 
+    					  
+  					    <?php if ( !empty(  $module->meta->{"module-author-uri"}[0] ) ): ?>
+                <a href="<?php echo  $module->meta->{"module-author-uri"}[0]; ?>" target="_blank">
+                <?php endif; ?>
+                
+                <?php echo $module->meta->{"module-author"}[0] ?>
+                
+                <?php if ( !empty( $module->meta->{"module-author"}[0] ) ): ?>
+                </a>
+                <?php endif; ?></li>
+                
+                <?php if ( !empty( $module->meta->{"module-more-info"}[0] ) ): ?>
+    					  <li><a href="<?php echo $module->meta->{"module-more-info"}[0]; ?>" target="_blank">&rtri; More Information</a></li>
+                <?php endif; ?>
+                  
+              <?php endif; ?>
+                              
+            </ul>
+          </li>
+        <?php endforeach; ?>
+        
+        <div class="pagination">
+          
+          <?php $offset_string = ( $offset + 1 ) . '-' . ( ( $offset + 20 ) < $found ?  ( $offset + 20 ) : $found ); ?>
+          <?php echo sprintf( __( "Showing Results %s of %d" , $this->plugin_name ), $offset_string, $found ); ?>
+
+          <ul class="pagination-links">
+            <?php 
+             
+            $last = ceil( $found / 20 );
+         
+            $start = ( ( $result_page - $count_modules ) > 0 ) ? $result_page - $count_modules : 1;
+            $end = ( ( $result_page + $count_modules ) < $last ) ? $result_page + $count_modules : $last;
+                     
+            if ( $result_page > 1 ) {
+              echo '<li>';
+              echo '<a href="' . add_query_arg( 'result_page', $result_page - 1 ) . '">&laquo;</a>';
+              echo '</li>';
+            }
+         
+            if ( $start > 1 ) {
+              echo '<li><a href="' . add_query_arg( 'result_page', 1 ) . '">1</a></li>';
+              echo '<li class="disabled"><span>...</span></li>';
+            }
+         
+            for ( $i = $start ; $i <= $end; $i++ ) {
+                echo'<li class="' . ( $result_page == $i ? 'active' : '' ) . '">';
+                echo '<a href="' . add_query_arg( 'result_page', $i ) . '">' . $i . '</a>';
+                echo '</li>';
+            }
+         
+            if ( $end < $last ) {
+                echo '<li class="disabled"><span>...</span></li>';
+                echo '<li><a href="' . add_query_arg( 'result_page', $last ) . '">' . $last . '</a></li>';
+            }
+         
+            if ( $result_page != $last ) { 
+              echo '<li>';
+              echo '<a href="' . add_query_arg( 'result_page', $result_page + 1 ) . '">&raquo;</a>';
+              echo '</li>';
+            }         
+            ?>
+          </ul>          
+        </div>
+        
+      <?php else: ?>
+        <li><?_e( "Could not find any modules.", $this->plugin_name ); ?></li>
+      <?php endif; ?>
+      </ul>                 
+    </div>
+  <?php
+  }
+  	
 	/**
 	 * Get latest version of a module.
 	 *
@@ -461,6 +620,7 @@ class Beaver_Brewer_Admin {
     return $this->delete_directory( MY_MODULES_DIR . $module );       
   }
   
+  
  /**
 	 * Deactivate a module via Ajax.
 	 *
@@ -788,6 +948,6 @@ class Beaver_Brewer_Admin {
   		wp_localize_script( $this->plugin_name, "BeaverBrewer", $bb_config );
   
       wp_enqueue_script( $this->plugin_name );
-    }	
+    }
 	}
 }
