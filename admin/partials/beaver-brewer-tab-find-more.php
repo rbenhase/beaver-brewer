@@ -16,11 +16,11 @@
   <div id="module-directory">        
 
     <div class="module-directory-toolbar">
-      <a href="<?php echo add_query_arg( "orderby", "date", admin_url( "admin.php?page=beaver-brewer&tab=1" ) );?>"><?php _e( "By Most Recent", $this->plugin_name ); ?></a> |
-      <a href="<?php echo add_query_arg( "orderby", "name", admin_url( "admin.php?page=beaver-brewer&tab=1" ) );?>"><?php _e( "Alphabetically", $this->plugin_name ); ?></a>
+      <a href="<?php echo add_query_arg( "orderby", "date", admin_url( "admin.php?page=beaver-brewer&tab=find-more" ) );?>"><?php _e( "By Most Recent", $this->plugin_name ); ?></a> |
+      <a href="<?php echo add_query_arg( "orderby", "name", admin_url( "admin.php?page=beaver-brewer&tab=find-more" ) );?>"><?php _e( "Alphabetically", $this->plugin_name ); ?></a>
       <form method="POST" action="">
-      <input type="search" name="search" id="module-search" placeholder="<?php _e( "Enter Search Term...", $this->plugin_name ); ?>" value="<?php ( isset( $_REQUEST['search'] ) ? $_REQUEST['search'] : '' ); ?>">
-      <input type="submit" class="button-secondary" value="<?php _e( "Submit", $this->plugin_name ); ?>">
+      <input type="search" name="search" id="module-search" size="30" placeholder="<?php _e( "Enter Search Term...", $this->plugin_name ); ?>" value="<?php ( isset( $_REQUEST['search'] ) ? $_REQUEST['search'] : '' ); ?>">
+      <input type="submit" class="button-secondary" value="<?php _e( "Search Modules", $this->plugin_name ); ?>">
       </form>
     </div>    
     

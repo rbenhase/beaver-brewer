@@ -56,7 +56,7 @@
               <?php $update_count++; ?>
               <?php if ( !empty( $module['download'] ) ): ?>
                 <p>
-                  <a class="button-primary update-automatically" href="#" data-module="<?php echo $module['name'];?>" data-download="<?php echo $module['download'];?>" data-latest="<?php echo $latest;?>">
+                  <a class="button-primary update-automatically" href="#" data-module="<?php echo $module['name'];?>" data-update="<?php echo $module['updates'];?>" data-latest="<?php echo $latest;?>">
                     <?php _e( "Update Automatically", $this->plugin_name ); ?>
                   </a>
                   

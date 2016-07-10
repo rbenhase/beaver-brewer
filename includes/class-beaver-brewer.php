@@ -186,7 +186,7 @@ class Beaver_Brewer {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Beaver_Brewer_Admin( $this->get_plugin_name(), $this->get_version(), $this->get_modules() );
+		$plugin_admin = new Beaver_Brewer_Admin( $this->get_plugin_name(), $this->get_version(), self::get_modules() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -207,7 +207,7 @@ class Beaver_Brewer {
 	private function define_public_hooks() {
 
     if( !is_admin() ) {
-      $plugin_public = new Beaver_Brewer_Public( $this->get_plugin_name(), $this->get_version(), $this->get_modules() );		
+      $plugin_public = new Beaver_Brewer_Public( $this->get_plugin_name(), $this->get_version(), self::get_modules() );		
       $this->loader->add_action( 'init', $plugin_public, 'register_modules' );
     }		
 	}
@@ -260,10 +260,10 @@ class Beaver_Brewer {
 	 * @since   0.1.0
 	 * @return  Array   $modules  All installed modules
 	 */
-	public function get_modules() {
+	public static function get_modules() {
   	
   	$modules = array();
-  	
+    	
   	// Get directory listing
     $directory_contents = glob( WP_CONTENT_DIR . '/bb-modules/*' );
     
@@ -286,9 +286,12 @@ class Beaver_Brewer {
                     $subdirectory . '/module.config', 
                     array( 
                       "ModuleName" => "Module Name",
+                      "ModuleSlug" => "Module Slug",
                       "ModuleVersion" => "Module Version",  
                       "ShortDescription" => "Short Description",  
-                      "UpdateURI" => "Update URI",
+                      "AuthorName" => "Author Name",
+                      "AuthorURL" => "Author URL",
+                      "UpdateURL" => "Update URL",
                       "DownloadZIP" => "Download ZIP",
                       "MoreInfo" => "More Info URL" 
                     ) 
@@ -300,11 +303,20 @@ class Beaver_Brewer {
           if ( !empty( $data['ModuleVersion'] ) )
             $module_settings['version'] = $data['ModuleVersion'];
             
-          if ( !empty( $data['ShortDescription'] ) )
-            $module_settings['description'] = $data['ShortDescription'];
+          if ( !empty( $data['ModuleSlug'] ) )
+            $module_settings['slug'] = $data['ModuleSlug'];
             
-          if ( !empty( $data['UpdateURI'] ) )
-            $module_settings['updates'] = $data['UpdateURI'];
+          if ( !empty( $data['ShortDescription'] ) )
+            $module_settings['description'] = $data['ShortDescription'];            
+            
+          if ( !empty( $data['AuthorName'] ) )
+            $module_settings['author'] = $data['AuthorName'];            
+            
+          if ( !empty( $data['AuthorURL'] ) )
+            $module_settings['author-url'] = $data['AuthorURL'];         
+            
+          if ( !empty( $data['UpdateURL'] ) )
+            $module_settings['updates'] = $data['UpdateURL'];
             
           if ( !empty( $data['DownloadZIP'] ) )
             $module_settings['download'] = $data['DownloadZIP'];
@@ -322,6 +334,27 @@ class Beaver_Brewer {
     
     return $modules;
 	}
+	
+	
+	/**
+	 * Get active modules.
+	 *
+	 * @since   0.3.0
+	 * @param   String    $module_slug  The machine-readable module slug
+	 * @return  Boolean                 Whether or not the module is installed
+	 */
+	public static function module_exists( $module_slug ) {
+  	
+    $modules = self::get_modules();
+  	
+  	foreach ( $modules as $module ) {
+    	if ( $module['name'] == $module_slug )
+    	  return true;
+  	}  	
+  	return false;
+	}
+	
+
 	
 	/**
 	 * Get active modules.

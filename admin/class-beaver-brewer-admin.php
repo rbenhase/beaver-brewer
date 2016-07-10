@@ -109,8 +109,25 @@ class Beaver_Brewer_Admin {
 	 * @since    0.1.0
 	 */
 	public function render_admin() {
+  	
+    // See if we are supposed to activate any modules and update their status accordinly.
+    if ( !empty( $_GET['activate'] ) && wp_verify_nonce( $_GET['activate_module_nonce'], 'activate_module' ) ) {
+      $result = $this->activate_module( $_GET['activate'] );    
+      if ( $result ) {
+        foreach ( $this->modules as $k => $module ) {          
+          if ( $module['name'] == $_GET['activate'] )  {
+            $this->modules[$k]['active'] = true;    
+            $this->print_message( 
+              __( "Module Activated", $this->plugin_name ),
+              sprintf( __( "Successfully activated the %s module.", $this->plugin_name ), ( !empty( $this->modules[$k]['nicename'] ) ? $this->modules[$k]['nicename'] : $this->modules[$k]['name'] ) )
+            );
+          }      
+        }
+      }
+    }
 
     $update_count = 0;
+      
     include_once( 'partials/beaver-brewer-admin-display.php' );
     
     // If updates are available, update the cached value
@@ -127,12 +144,12 @@ class Beaver_Brewer_Admin {
 	 */
   public function get_admin_page_tabs() {
     $tabs = array(
-      __( "My Modules", $this->plugin_name ),
-      __( "Find More Modules", $this->plugin_name )
+      "my-modules" => __( "My Modules", $this->plugin_name ),
+      "find-more" => __( "Find More Modules", $this->plugin_name )
     );
     
-    $current = ( isset( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 0 );
-      
+    $current = ( isset( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'my-modules' );
+    
     echo '<h2 class="nav-tab-wrapper">';
     foreach( $tabs as $tab => $name ){
         $class = ( $tab == $current ) ? ' nav-tab-active' : '';
@@ -182,7 +199,7 @@ class Beaver_Brewer_Admin {
       <ul class="clearfix">
         
       <?php $result = json_decode( $response['body'] ); ?>
-      
+
       <?php $modules = $result->posts; ?>
       <?php $found = $result->found; ?>
       <?php $offset = $result->offset; ?>
@@ -192,20 +209,20 @@ class Beaver_Brewer_Admin {
         <li><?_e( "An error occurred while connecting to the directory.", $this->plugin_name ); ?></li>
       <?php elseif ( !empty( $modules ) && isset( $modules[0]->ID ) ): ?>
         <?php foreach ( $modules as $module ): ?>
-          
-          <li class="single-module">
-            <h3 class="module-title"><?php echo $module->post_title; ?></h3>
+        
+          <li class="single-module">          
+            <h3 class="module-title"><?php echo $module->title; ?></h3>
             <?php if ( !empty(  $module->meta->{"module-description"}[0] ) ): ?>
               <p><?php echo ( strlen( $module->meta->{"module-description"}[0] )> 140  ? mb_substr( $module->meta->{"module-description"}[0], 0, 140 ) . '...' : $module->meta->{"module-description"}[0] ); ?></p>
             <?php endif; ?>
             <ul class="module-details">
 
               <?php if ( !empty( $module->meta->{"module-version"}[0] ) ): ?>
-    					  <li><strong>Version:</strong> <?php echo $module->meta->{"module-version"}[0]; ?></li>
+    					  <li><strong> <?php _e( "Version", $this->plugin_name ); ?>: </strong> <?php echo $module->meta->{"module-version"}[0]; ?></li>
     					<?php endif; ?>
     					
     					<?php if ( !empty(  $module->meta->{"module-author"}[0] ) ): ?>
-    					  <li><strong>Author:</strong> 
+    					  <li><strong><?php _e( "Author", $this->plugin_name ); ?>: </strong> 
     					  
   					    <?php if ( !empty(  $module->meta->{"module-author-uri"}[0] ) ): ?>
                 <a href="<?php echo  $module->meta->{"module-author-uri"}[0]; ?>" target="_blank">
@@ -218,7 +235,21 @@ class Beaver_Brewer_Admin {
                 <?php endif; ?></li>
                 
                 <?php if ( !empty( $module->meta->{"module-more-info"}[0] ) ): ?>
-    					  <li><a href="<?php echo $module->meta->{"module-more-info"}[0]; ?>" target="_blank">&rtri; More Information</a></li>
+    					  <li><a href="<?php echo $module->meta->{"module-more-info"}[0]; ?>" target="_blank">&rtri; <?php _e( "More Information", $this->plugin_name ); ?></a></li>
+                <?php endif; ?>
+                
+                <?php if ( !empty( $module->meta->{"module-download"}[0] ) && !Beaver_Brewer::module_exists( $module->slug ) ): ?>
+                <li class="install-now">
+                  <a href="<?php echo admin_url( 'admin.php?page=beaver-brewer&tab=install&module=' . urlencode( $module->slug ) . '&source=' . urlencode( $module->meta->{"module-download"}[0] ) ); ?>" class="button-primary install-now">
+                    <?php _e( "Install This Module Now", $this->plugin_name ); ?>
+                  </a>
+                </li>        
+                <?php elseif ( Beaver_Brewer::module_exists( $module->slug ) ): ?>
+                <li class="install-now">
+                  <em class="install-now">
+                    <?php _e( "This module is already installed on your site.", $this->plugin_name ); ?>
+                  </em>
+                </li>  
                 <?php endif; ?>
                   
               <?php endif; ?>
@@ -226,6 +257,7 @@ class Beaver_Brewer_Admin {
             </ul>
           </li>
         <?php endforeach; ?>
+        </ul>
         
         <div class="pagination">
           
@@ -337,6 +369,14 @@ class Beaver_Brewer_Admin {
     if ( empty( $module['version'] ) )
       return -1;
       
+    if ( empty( $module['updates'] ) ) {
+      error_log(
+        __( "Beaver Brewer Error: Some of the data in your module.config file appears to be missing or invalid. Automatic updates will not work." ) 
+        . ( !empty( $module['name'] ) ? __( " Check module: " ) . $module['name'] : '' ) 
+      );
+      return -1;
+    }
+      
     $latest = $this->get_latest( $module['updates'] );
       
     return version_compare( $module['version'], $latest, '<' );    	
@@ -406,8 +446,8 @@ class Beaver_Brewer_Admin {
     if ( !isset( $_POST['module'] ) ) {
       $this->trigger_ajax_failure( "No module path specified." );
     }
-    if ( !isset( $_POST['download'] ) ) {
-      $this->trigger_ajax_failure( "No download URL specified." );
+    if ( !isset( $_POST['update'] ) ) {
+      $this->trigger_ajax_failure( "No remote module config specified." );
     }    
     if ( !is_dir( MY_MODULES_DIR . $_POST['module'] ) ) {
       $this->trigger_ajax_failure( "Could not find module directory." );
@@ -421,9 +461,21 @@ class Beaver_Brewer_Admin {
       $this->trigger_ajax_failure( "Could not open temporary file for writing." );
     }
     
+    $data = get_file_data( 
+      $_POST['update'], 
+      array( 
+        "DownloadZIP" => "Download ZIP"
+      ) 
+    );
+    
+    if ( empty( $data["DownloadZIP"] ) ) 
+      $this->trigger_ajax_failure( "Update Failed: Could not read from remote module config." );
+    
+    $download_url = $data["DownloadZIP"];
+    
     //Download update via cURL
     $ch = curl_init();
-    curl_setopt( $ch, CURLOPT_URL, $_POST['download'] );
+    curl_setopt( $ch, CURLOPT_URL, $download_url );
     curl_setopt( $ch, CURLOPT_RETURNTRANSFER, false );
     curl_setopt( $ch, CURLOPT_BINARYTRANSFER, true );
     curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
@@ -573,7 +625,7 @@ class Beaver_Brewer_Admin {
     }    
     
     // If module is not already listed as active, activate it in DB
-    if ( !in_array( $active_modules, $module ) )
+    if ( !in_array( $module, $active_modules ) )
       array_push( $active_modules, $module );
         
     // Update DB
@@ -821,6 +873,7 @@ class Beaver_Brewer_Admin {
     return true; 
 	}
 	
+	
 	/**
 	 * Handle uploaded files.
 	 *
@@ -882,6 +935,65 @@ class Beaver_Brewer_Admin {
       );
   
       exit;
+    }
+	}
+
+	
+	
+	/**
+	 * Install module in one click.
+	 *
+	 * @since   0.4.0
+	 * @param   String    $source   An encoded URL from which to retrieve the module package.
+	 * @return  Boolean             Whether or not installation succeeded.
+	 */
+	public function install_module( $source ) {
+  	
+  	$temp_file = download_url( urldecode( $source ), 300 );
+  	
+  	if ( is_wp_error( $temp_file ) ) {
+    	_e( "Installation Failed: Could not download package. Check your error log for more info.", $this->plugin_name );
+    	return false;
+    } else {
+      
+      // Prepare ZIP archive
+      $zip = new ZipArchive;
+      
+      if ( $zip->open( $temp_file ) != "true" ) {
+        _e( "Installation Failed: Cannot read from package.", $this->plugin_name );
+        return false;
+      }
+      
+      // Set temporary error handler
+  		set_error_handler( function( $errno, $errstr, $errfile, $errline ) {
+    		
+    		// error was suppressed with the @-operator
+        if ( 0 === error_reporting() ) {
+            return false;
+        }
+    
+        throw new ErrorException( $errstr, 0, $errno, $errfile, $errline );
+      });
+      
+      try {
+        $extracted = $zip->extractTo( rtrim( MY_MODULES_DIR, '/' ) );
+      } catch ( ErrorException $e ) {
+        $extracted = false;
+      }
+      
+      // Restore default error handler
+      restore_error_handler();
+      
+      // If extraction failed
+      if ( $extracted == false ) {
+        $zip->close();   
+        _e( "Installation Failed: Could not extract update. Check your file permissions.", $this->plugin_name );
+        return false;
+      } 
+      
+      $zip->close(); 
+      _e( "Success! The module has been installed.", $this->plugin_name );
+      return true;
     }
 	}
 

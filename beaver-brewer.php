@@ -16,7 +16,7 @@
  * Plugin Name:       Beaver Brewer
  * Plugin URI:        http://beaverbrewer.com/
  * Description:       Enables a la carte installation of custom Beaver Builder modules. Requires Beaver Builder Premium.
- * Version:           0.3.0
+ * Version:           0.4.0
  * Author:            Ryan Benhase
  * Author URI:        http://ryanbenhase.com
  * License:           GPL-2.0+

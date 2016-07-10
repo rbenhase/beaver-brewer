@@ -135,8 +135,28 @@
 }
 
 #find-more-modules .module-directory-toolbar form {
-  display:inline-block;
-  margin: 0 0 15px 15px;
+  display:block;
+  margin: 0 auto 30px;
+}
+
+@media screen and (min-width: 783px) {
+  #find-more-modules .module-directory-toolbar form {
+    float:right;
+    margin: 0 15px 15px 0;
+  }
+  #find-more-modules .module-directory-toolbar a {
+    margin: 5px 0 15px 0;
+  }
+}
+
+#module-results > ul {
+  flex-wrap:wrap;
+  align-items:stretch;
+  flex-direction: row;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  overflow: hidden;
 }
 
 #module-results .single-module {
@@ -144,8 +164,15 @@
   background-color:#eee;
   border:1px solid #ccc;
   margin:0 1em 1em 0;
-  float:left;
-  max-width:300px;
+  display:block;
+  width:280px;
+  min-width:250px;
+  vertical-align:top;  
+  flex:1;
+}
+
+#module-results .single-module .install-now {
+  margin: 15px 0;
 }
 
 #module-results .pagination {
@@ -169,6 +196,14 @@
   text-decoration:none;
 }
 
-#module-results .pagination .pagination-links li a:hover {
-  
+#install-result .button-primary,
+#install-result .button-secondary {
+  margin: 5px 0;
+}
+
+@media screen and ( max-width:782px ) {
+  .module-directory-toolbar input[type=submit] {
+    padding: 6px 10px;
+    height:36px;
+  }
 }

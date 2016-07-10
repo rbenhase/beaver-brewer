@@ -16,7 +16,7 @@
     	  action: "beaver_brewer_auto_update",
     	  _ajax_nonce: BeaverBrewer.ajaxNonce,
     	  module: elem.data("module"),
-    	  download: elem.data("download")
+    	  update: elem.data("update")
   	  },
   	  function(response) {
     	  module.find(".module-updates").text( response.message );

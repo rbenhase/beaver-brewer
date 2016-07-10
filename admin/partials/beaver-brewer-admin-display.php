@@ -21,20 +21,20 @@
   
   <?php if ( $ready ): ?>
     <hr>
-    <h4>
-      <?php _e( "Warning: Installing modules from untrusted sources could create big problems for you and your site.<br>
-                  Always use caution when adding or updating modules, and back up your site on a regular basis.", $this->plugin_name ); ?>
-    </h4>
 
     <?php $tab = $this->get_admin_page_tabs(); ?>
         
-    <?php if ( $tab == 0 ): ?>
+    <?php if ( $tab === 'my-modules' ): ?>
       
       <?php include_once( 'beaver-brewer-tab-my-modules.php' ); ?>
     
-    <?php elseif( $tab == 1 ): ?>
+    <?php elseif( $tab === 'find-more' ): ?>
     
       <?php include_once( 'beaver-brewer-tab-find-more.php' ); ?>
+      
+    <?php elseif( $tab === 'install' ): ?>
+    
+      <?php include_once( 'beaver-brewer-tab-install.php' ); ?>
     
     <?php else: ?>
     
@@ -45,4 +45,9 @@
   <?php else: ?>
   
   <?php endif; ?>
+  
+  <h4>
+  <?php _e( "Warning: Installing modules from untrusted sources could create big problems for you and your site.<br>
+              Always use caution when adding or updating modules, and back up your site on a regular basis.", $this->plugin_name ); ?>
+</h4>
 </div>
