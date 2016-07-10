@@ -20,7 +20,6 @@
   <?php $ready = $this->check_directory(); ?>
   
   <?php if ( $ready ): ?>
-    <hr>
 
     <?php $tab = $this->get_admin_page_tabs(); ?>
         
@@ -38,7 +37,7 @@
     
     <?php else: ?>
     
-      <p>Tab not found.</p>
+      <p><?php _e( "Tab not found.", $this->plugin_name ); ?></p>
     
     <?php endif; ?>
       
@@ -46,8 +45,10 @@
   
   <?php endif; ?>
   
+  <br>
+  <hr>
   <h4>
-  <?php _e( "Warning: Installing modules from untrusted sources could create big problems for you and your site.<br>
-              Always use caution when adding or updating modules, and back up your site on a regular basis.", $this->plugin_name ); ?>
+  <?php _e( "Warning: Installing modules from untrusted sources could create big problems for you and your site.", $this->plugin_name ); ?><br>
+  <?php _e( "Always use caution when adding or updating modules, and back up your site on a regular basis.", $this->plugin_name ); ?>
 </h4>
 </div>
