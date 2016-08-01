@@ -131,12 +131,37 @@
 
 #find-more-modules .module-directory-toolbar a {
   margin: 0 0 15px 0;
+  display:block;
+}
+
+#find-more-modules .module-directory-toolbar strong {
+  margin: 5px 5px 15px 0;
+}
+
+#find-more-modules .module-directory-toolbar .toolbar-section {
+  margin: 0 30px 15px 0;
   display:inline-block;
 }
+
 
 #find-more-modules .module-directory-toolbar form {
   display:block;
   margin: 0 auto 30px;
+}
+
+#find-more-modules .module-directory-toolbar .active-orderby,
+#find-more-modules .module-directory-toolbar .active-filter {
+  background:#009FFD;
+  border-right:1px solid #009FFD;
+  border-left: 1px solid #009FFD;
+  color:#fff;
+}
+
+#find-more-modules #filter-module-results {
+  margin: 0 20px 10px;
+  display:inline-block;
+  vertical-align:top;
+  display:none;
 }
 
 @media screen and (min-width: 783px) {
@@ -145,7 +170,20 @@
     margin: 0 15px 15px 0;
   }
   #find-more-modules .module-directory-toolbar a {
-    margin: 5px 0 15px 0;
+    margin: 5px 0 15px;
+    padding: 0 8px;
+    border-right:1px solid #999;
+    border-left:1px solid transparent;
+    float:left;
+  }
+  
+  #find-more-modules .module-directory-toolbar strong {
+    float:left;
+  }
+  
+
+  #find-more-modules .module-directory-toolbar a:last-child {
+    border-right:1px solid transparent;
   }
 }
 
@@ -169,6 +207,10 @@
   min-width:250px;
   vertical-align:top;  
   flex:1;
+}
+
+#module-results .single-module span.paid {
+  color: #f0c030;
 }
 
 #module-results .single-module .install-now {
