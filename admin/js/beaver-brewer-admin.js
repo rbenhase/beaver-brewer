@@ -107,7 +107,6 @@
     	  module: elem.data("module")
   	  },
   	  function(response) {
-    	  console.log(response);
     	  $("html, body").animate({scrollTop: messages.offset().top},500);
     	  
     	  if (response.success) {
@@ -177,12 +176,11 @@
   	  );  	  
 	  }
   });
-  
-  
-  
+    
   
   $(document).ready(function() {
-    
+        
+    /* File Uploader */
     var uploader = new plupload.Uploader(BeaverBrewer.pluploadConfig);
     
     // Ensure browser supports drag and drop
@@ -218,7 +216,6 @@
     // File uploaded 
     uploader.bind('FileUploaded', function(up, file, response) {
       var response = $.parseJSON(response.response);
-      console.log(response.response);
 			window.location.reload();
     });
 
