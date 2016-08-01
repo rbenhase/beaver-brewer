@@ -175,10 +175,13 @@ class Beaver_Brewer_Admin {
       _e( "Search Results: ", $this->plugin_name );
       echo $_REQUEST['search']; 
     } else if ( isset( $_REQUEST['orderby'] ) && $_REQUEST['orderby'] == 'name' ) {
-      $response = wp_remote_get( 'http://beaverbrewer.com/wp-json/brewer/v2/modules-alphabetical/' . $result_page ); 
+      $response = wp_remote_get( 'http://beaverbrewer.com/wp-json/brewer/v2/modules-alphabetical/' . urlencode( $_REQUEST['filter'] ) . '/' . $result_page ); 
       _e( "Modules - Alphabetical", $this->plugin_name );
+    } else if ( isset( $_REQUEST['orderby'] ) && $_REQUEST['orderby'] == 'date_asc' ) {
+      $response = wp_remote_get( 'http://beaverbrewer.com/wp-json/brewer/v2/modules-oldest/' . urlencode( $_REQUEST['filter'] ) . '/' . $result_page );
+      _e( "Oldest Added Modules", $this->plugin_name );
     } else {
-      $response = wp_remote_get( 'http://beaverbrewer.com/wp-json/brewer/v2/modules-latest/' . $result_page );
+      $response = wp_remote_get( 'http://beaverbrewer.com/wp-json/brewer/v2/modules-latest/' . urlencode( $_REQUEST['filter'] ) . '/' . $result_page );
       _e( "Recently Added Modules", $this->plugin_name );
     }
     echo '</h3>';
@@ -200,18 +203,23 @@ class Beaver_Brewer_Admin {
         
       <?php $result = json_decode( $response['body'] ); ?>
 
-      <?php $modules = $result->posts; ?>
-      <?php $found = $result->found; ?>
-      <?php $offset = $result->offset; ?>
-      <?php $count_modules = count( $modules ); ?>
-      <?php $result_page = ( isset( $_REQUEST['result_page'] ) ? $_REQUEST['result_page'] : 1 ); ?>
+      <?php $modules = ( empty( $result->posts ) ? 0 : $result->posts ); ?>
+
       <?php if ( !empty( $modules ) && is_object( $modules ) ): ?>
-        <li><?_e( "An error occurred while connecting to the directory.", $this->plugin_name ); ?></li>
+        <li><?_e( "An error occurred while connecting to the directory. Try again in a minute, and if you continue to experience problems, make sure the Beaver Brewer plugin is up-to-date.", $this->plugin_name ); ?></li>
       <?php elseif ( !empty( $modules ) && isset( $modules[0]->ID ) ): ?>
+        
+        <?php $found = $result->found; ?>
+        <?php $offset = $result->offset; ?>
+        <?php $count_modules = count( $modules ); ?>
+        <?php $result_page = ( isset( $_REQUEST['result_page'] ) ? $_REQUEST['result_page'] : 1 ); ?>
+        
         <?php foreach ( $modules as $module ): ?>
         
-          <li class="single-module">          
-            <h3 class="module-title"><?php echo $module->title; ?></h3>
+          <?php $paid = !empty( $module->meta->{"module-purchase"}[0] ); ?>
+        
+          <li class="single-module <?php echo ( $paid ? 'paid-module' : 'free-module' ); ?>">          
+            <h3 class="module-title"><?php echo $module->post_title; ?><?php echo ( $paid ? ' <span class="paid">[Paid]</span>' : '' ); ?></h3>
             <?php if ( !empty(  $module->meta->{"module-description"}[0] ) ): ?>
               <p><?php echo ( strlen( $module->meta->{"module-description"}[0] )> 140  ? mb_substr( $module->meta->{"module-description"}[0], 0, 140 ) . '...' : $module->meta->{"module-description"}[0] ); ?></p>
             <?php endif; ?>
@@ -238,12 +246,18 @@ class Beaver_Brewer_Admin {
     					  <li><a href="<?php echo $module->meta->{"module-more-info"}[0]; ?>" target="_blank">&rtri; <?php _e( "More Information", $this->plugin_name ); ?></a></li>
                 <?php endif; ?>
                 
-                <?php if ( !empty( $module->meta->{"module-download"}[0] ) && !Beaver_Brewer::module_exists( $module->slug ) ): ?>
+                <?php if ( !$paid && !empty( $module->meta->{"module-download"}[0] ) && !Beaver_Brewer::module_exists( $module->slug ) ): ?>
                 <li class="install-now">
                   <a href="<?php echo admin_url( 'admin.php?page=beaver-brewer&tab=install&module=' . urlencode( $module->slug ) . '&source=' . urlencode( $module->meta->{"module-download"}[0] ) ); ?>" class="button-primary install-now">
                     <?php _e( "Install This Module Now", $this->plugin_name ); ?>
                   </a>
                 </li>        
+                <?php elseif ( $paid && !Beaver_Brewer::module_exists( $module->slug ) ): ?>
+                  <li class="install-now">
+                    <a href="<?php echo esc_url( $module->meta->{"module-purchase"}[0] ); ?>" target="_blank" class="button-secondary install-now">
+                      <?php _e( "Purchase This Module Now", $this->plugin_name ); ?>
+                    </a>
+                  </li>  
                 <?php elseif ( Beaver_Brewer::module_exists( $module->slug ) ): ?>
                 <li class="install-now">
                   <em class="install-now">
@@ -304,7 +318,8 @@ class Beaver_Brewer_Admin {
         </div>
         
       <?php else: ?>
-        <li><?_e( "Could not find any modules.", $this->plugin_name ); ?></li>
+        <li><?php _e( "No modules found. If you think this is in error, make sure the Beaver Brewer plugin is up-to-date.", $this->plugin_name ); ?></li>
+        <pre><?php print_r( $result ); ?></pre>
       <?php endif; ?>
       </ul>                 
     </div>
