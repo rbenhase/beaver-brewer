@@ -175,13 +175,13 @@ class Beaver_Brewer_Admin {
       _e( "Search Results: ", $this->plugin_name );
       echo $_REQUEST['search']; 
     } else if ( isset( $_REQUEST['orderby'] ) && $_REQUEST['orderby'] == 'name' ) {
-      $response = wp_remote_get( 'http://beaverbrewer.com/wp-json/brewer/v2/modules-alphabetical/' . urlencode( $_REQUEST['filter'] ) . '/' . $result_page ); 
+      $response = wp_remote_get( 'http://beaverbrewer.com/wp-json/brewer/v2/modules-alphabetical/' . ( !empty( $_REQUEST['filter'] ) ? urlencode( $_REQUEST['filter'] ) : 'none' ) . '/' . $result_page ); 
       _e( "Modules - Alphabetical", $this->plugin_name );
     } else if ( isset( $_REQUEST['orderby'] ) && $_REQUEST['orderby'] == 'date_asc' ) {
-      $response = wp_remote_get( 'http://beaverbrewer.com/wp-json/brewer/v2/modules-oldest/' . urlencode( $_REQUEST['filter'] ) . '/' . $result_page );
+      $response = wp_remote_get( 'http://beaverbrewer.com/wp-json/brewer/v2/modules-oldest/' . ( !empty( $_REQUEST['filter'] ) ? urlencode( $_REQUEST['filter'] ) : 'none' ) . '/' . $result_page );
       _e( "Oldest Added Modules", $this->plugin_name );
     } else {
-      $response = wp_remote_get( 'http://beaverbrewer.com/wp-json/brewer/v2/modules-latest/' . urlencode( $_REQUEST['filter'] ) . '/' . $result_page );
+      $response = wp_remote_get( 'http://beaverbrewer.com/wp-json/brewer/v2/modules-latest/' . ( !empty( $_REQUEST['filter'] ) ? urlencode( $_REQUEST['filter'] ) : 'none' ) . '/' . $result_page );
       _e( "Recently Added Modules", $this->plugin_name );
     }
     echo '</h3>';
@@ -319,7 +319,6 @@ class Beaver_Brewer_Admin {
         
       <?php else: ?>
         <li><?php _e( "No modules found. If you think this is in error, make sure the Beaver Brewer plugin is up-to-date.", $this->plugin_name ); ?></li>
-        <pre><?php print_r( $result ); ?></pre>
       <?php endif; ?>
       </ul>                 
     </div>
