@@ -232,8 +232,8 @@ class Beaver_Brewer_Admin {
     					<?php if ( !empty(  $module->meta->{"module-author"}[0] ) ): ?>
     					  <li><strong><?php _e( "Author", $this->plugin_name ); ?>: </strong> 
     					  
-  					    <?php if ( !empty(  $module->meta->{"module-author-uri"}[0] ) ): ?>
-                <a href="<?php echo  $module->meta->{"module-author-uri"}[0]; ?>" target="_blank">
+  					    <?php if ( !empty(  $module->meta->{"module-author-url"}[0] ) ): ?>
+                <a href="<?php echo  $module->meta->{"module-author-url"}[0]; ?>" target="_blank">
                 <?php endif; ?>
                 
                 <?php echo $module->meta->{"module-author"}[0] ?>
