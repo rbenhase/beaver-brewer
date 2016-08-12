@@ -271,8 +271,9 @@ class Beaver_Brewer {
     foreach ( $directory_contents as $subdirectory ) {
       
       $module_settings = array();
+      $glob = glob( $subdirectory . '/*.php' );
       
-      if ( is_dir( $subdirectory ) && basename( $subdirectory ) != '.backup'  && !empty ( glob( $subdirectory . '/*.php' ) ) ) {
+      if ( is_dir( $subdirectory ) && basename( $subdirectory ) != '.backup'  && !empty ( $glob ) ) {
         $module_settings['path'] = $subdirectory;
         $module_settings['name'] = basename( $subdirectory );
         
